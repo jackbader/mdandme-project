@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import PostList from "@/components/post-list";
+import { StyleSheet, View } from "react-native";
 
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text>Index</Text>
+      <PostList />
     </View>
   );
 }
