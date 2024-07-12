@@ -1,16 +1,26 @@
-import usePosts from "@/hooks/get-posts";
-import { useCallback } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import PostItem from "./post-item";
-import { PostProps } from "@/types/model/post";
+import { colors } from '@/constants/colors';
+import { usePostsStore } from '@/stores/posts-store';
+import Post from '@/types/model/post';
+import { useCallback, useEffect } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import PostItem from './post-item';
 
 const PostList = () => {
-  const { posts, loading, error, refetch } = usePosts();
+  const { posts, fetchPosts, error, loading } = usePostsStore();
 
-  const renderItem = useCallback(({ item }: { item: PostProps }) => {
-    return <PostItem post={item} />;
+  useEffect(() => {
+    void fetchPosts();
   }, []);
+
+  const onEndReached = useCallback(() => {
+    void fetchPosts();
+  }, [fetchPosts]);
+
+  const keyExtractor = useCallback((item: Post): string => item.created_at, []);
+
+  const renderItem = ({ item, index }: { item: Post; index: number }) => {
+    return <PostItem post={item} index={index} />;
+  };
 
   if (loading) {
     return <ActivityIndicator />;
@@ -22,7 +32,13 @@ const PostList = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList data={posts} renderItem={renderItem} />
+      <FlatList
+        removeClippedSubviews={true}
+        onEndReached={onEndReached}
+        keyExtractor={keyExtractor}
+        data={posts}
+        renderItem={renderItem}
+      />
     </View>
   );
 };
@@ -30,7 +46,7 @@ const PostList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "red",
+    backgroundColor: colors.lightGrey,
   },
 });
 
