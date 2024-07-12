@@ -1,4 +1,4 @@
-# MDandMe API
+# MDandMe
 
 This is the backend API & frontend Expo app for the MDandMe social networking platform, focusing on sharing patient experiences.
 
